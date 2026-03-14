@@ -99,12 +99,15 @@ Talk to your AI in natural language. FacturaHub handles the rest.
 | "Create a client: John Doe, john@example.com" | Adds a new client to your database |
 | "List all clients" | Shows all your registered clients |
 | "Send reminder for overdue invoices" | Lists invoices that need follow-up |
+| "Show my profile" | Displays your company info, tax ID, bank details |
+| "Update my IBAN to ES12 3456 7890" | Updates your bank details on profile |
+| "Change my company name to Acme SL" | Updates your business profile |
 
 ---
 
 ## Available Tools
 
-FacturaHub exposes **15 MCP tools** that your AI can use:
+FacturaHub exposes **17 MCP tools** that your AI can use:
 
 ### Invoicing
 
@@ -135,6 +138,13 @@ FacturaHub exposes **15 MCP tools** that your AI can use:
 | `get_profit_loss` | Profit & Loss report for any month |
 | `get_tax_summary` | Tax summary for quarterly declarations (VAT/IVA) |
 | `get_cashflow` | Cash flow projection based on pending invoices & recurring expenses |
+
+### Profile
+
+| Tool | Description |
+|------|-------------|
+| `get_profile` | View your business profile: company, tax ID, address, bank details |
+| `update_profile` | Update company info, address, tax rate, currency, bank details |
 
 ---
 

@@ -448,6 +448,71 @@ function registerTools(server, user) {
             return err(`Error: ${e instanceof Error ? e.message : String(e)}`);
         }
     });
+    server.tool('get_profile', 'Get your business profile — company info, address, tax details, bank info, currency, and plan', async () => {
+        try {
+            const { user: profile } = await api('/auth/me');
+            return ok([
+                `=== Your Profile ===`,
+                ``,
+                `Name: ${profile.name}`,
+                `Email: ${profile.email}`,
+                profile.company ? `Company: ${profile.company}` : null,
+                profile.taxId ? `Tax ID: ${profile.taxId}` : null,
+                profile.country ? `Country: ${profile.country}` : null,
+                profile.currency ? `Currency: ${profile.currency}` : null,
+                profile.taxRate != null ? `Tax rate: ${profile.taxRate}%` : null,
+                ``,
+                profile.address || profile.city || profile.postalCode ? `Address: ${[profile.address, profile.city, profile.postalCode].filter(Boolean).join(', ')}` : null,
+                profile.phone ? `Phone: ${profile.phone}` : null,
+                ``,
+                profile.bankName || profile.bankIban ? `=== Bank Details ===` : null,
+                profile.bankName ? `Bank: ${profile.bankName}` : null,
+                profile.bankIban ? `IBAN: ${profile.bankIban}` : null,
+                profile.bankSwift ? `SWIFT/BIC: ${profile.bankSwift}` : null,
+                profile.bankAccountHolder ? `Account holder: ${profile.bankAccountHolder}` : null,
+                ``,
+                `Plan: ${profile.plan}`,
+            ].filter(Boolean).join('\n'));
+        }
+        catch (e) {
+            return err(`Error: ${e instanceof Error ? e.message : String(e)}`);
+        }
+    });
+    server.tool('update_profile', 'Update your business profile — company name, address, tax ID, bank details, currency, tax rate, etc.', {
+        company: zod_1.z.string().optional().describe('Company or business name'),
+        taxId: zod_1.z.string().optional().describe('Tax ID (NIF, CIF, RFC, CUIT, etc.)'),
+        country: zod_1.z.string().optional().describe('Country code (e.g. ES, MX, US, AR)'),
+        currency: zod_1.z.string().optional().describe('Currency code (EUR, USD, MXN, ARS, etc.)'),
+        taxRate: zod_1.z.number().optional().describe('Default tax rate % (e.g. 21 for 21%)'),
+        address: zod_1.z.string().optional().describe('Street address'),
+        city: zod_1.z.string().optional().describe('City'),
+        postalCode: zod_1.z.string().optional().describe('Postal / ZIP code'),
+        phone: zod_1.z.string().optional().describe('Phone number'),
+        bankName: zod_1.z.string().optional().describe('Bank name'),
+        bankIban: zod_1.z.string().optional().describe('IBAN or account number'),
+        bankSwift: zod_1.z.string().optional().describe('SWIFT / BIC code'),
+        bankAccountHolder: zod_1.z.string().optional().describe('Account holder name'),
+    }, async (params) => {
+        try {
+            const body = {};
+            for (const [key, value] of Object.entries(params)) {
+                if (value !== undefined)
+                    body[key] = value;
+            }
+            if (Object.keys(body).length === 0) {
+                return err('No fields provided to update. Specify at least one field.');
+            }
+            const { user: updated } = await api('/auth/profile', {
+                method: 'PUT',
+                body: JSON.stringify(body),
+            });
+            const changed = Object.keys(body).map(k => `  ${k}: ${body[k]}`).join('\n');
+            return ok(`Profile updated successfully.\n\nFields changed:\n${changed}`);
+        }
+        catch (e) {
+            return err(`Error updating profile: ${e instanceof Error ? e.message : String(e)}`);
+        }
+    });
 }
 // ---------------------------------------------------------------------------
 // Main — run MCP server
