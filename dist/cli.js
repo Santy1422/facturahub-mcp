@@ -1,0 +1,274 @@
+#!/usr/bin/env node
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+const server_1 = require("./server");
+const fs = __importStar(require("fs"));
+const path = __importStar(require("path"));
+const os = __importStar(require("os"));
+const readline = __importStar(require("readline"));
+// ---------------------------------------------------------------------------
+// CLI Colors
+// ---------------------------------------------------------------------------
+const green = (t) => `\x1b[32m${t}\x1b[0m`;
+const yellow = (t) => `\x1b[33m${t}\x1b[0m`;
+const red = (t) => `\x1b[31m${t}\x1b[0m`;
+const bold = (t) => `\x1b[1m${t}\x1b[0m`;
+const dim = (t) => `\x1b[2m${t}\x1b[0m`;
+const cyan = (t) => `\x1b[36m${t}\x1b[0m`;
+function getTargets() {
+    const home = os.homedir();
+    const platform = os.platform();
+    const claudeDesktop = platform === 'darwin'
+        ? path.join(home, 'Library', 'Application Support', 'Claude', 'claude_desktop_config.json')
+        : platform === 'win32'
+            ? path.join(process.env.APPDATA || '', 'Claude', 'claude_desktop_config.json')
+            : path.join(home, '.config', 'claude', 'claude_desktop_config.json');
+    return [
+        { id: 'claude-desktop', name: 'Claude Desktop', configPath: claudeDesktop, detected: fs.existsSync(path.dirname(claudeDesktop)) },
+        { id: 'claude-code', name: 'Claude Code', configPath: path.join(home, '.claude', 'settings.json'), detected: fs.existsSync(path.join(home, '.claude')) },
+        { id: 'cursor', name: 'Cursor', configPath: path.join(home, '.cursor', 'mcp.json'), detected: fs.existsSync(path.join(home, '.cursor')) },
+    ];
+}
+// ---------------------------------------------------------------------------
+// JSON file helpers
+// ---------------------------------------------------------------------------
+function readJson(filePath) {
+    try {
+        if (fs.existsSync(filePath))
+            return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    }
+    catch { }
+    return {};
+}
+function writeJson(filePath, data) {
+    const dir = path.dirname(filePath);
+    if (!fs.existsSync(dir))
+        fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2) + '\n');
+}
+function ask(rl, question, defaultVal) {
+    const suffix = defaultVal ? ` [${defaultVal}]` : '';
+    return new Promise((resolve) => {
+        rl.question(`${question}${suffix}: `, (answer) => {
+            resolve(answer.trim() || defaultVal || '');
+        });
+    });
+}
+// ---------------------------------------------------------------------------
+// MCP config that gets written to client config files
+// ---------------------------------------------------------------------------
+function mcpEntry(apiKey) {
+    return {
+        command: 'npx',
+        args: ['-y', 'facturahub@latest'],
+        env: {
+            FACTURAHUB_API_KEY: apiKey,
+            FACTURAHUB_API_URL: 'https://api.facturahub.com',
+        },
+    };
+}
+// ---------------------------------------------------------------------------
+// Setup command
+// ---------------------------------------------------------------------------
+async function setup(args) {
+    console.log('');
+    console.log(bold('  ⚡ FacturaHub MCP Setup'));
+    console.log(dim('  ────────────────────────'));
+    console.log('');
+    const targets = getTargets();
+    const detected = targets.filter((t) => t.detected);
+    // Show detected
+    console.log('  AI clients detected:\n');
+    for (const t of targets) {
+        const icon = t.detected ? green('●') : dim('○');
+        const label = t.detected ? 'found' : 'not found';
+        console.log(`    ${icon} ${t.name} — ${t.detected ? green(label) : dim(label)}`);
+    }
+    console.log('');
+    if (detected.length === 0) {
+        console.log(yellow('  No AI clients detected.'));
+        console.log('  Install Claude Desktop, Claude Code, or Cursor first.\n');
+        process.exit(1);
+    }
+    // Resolve target(s)
+    let selected;
+    if (args.target) {
+        const match = targets.find((t) => t.id === args.target);
+        if (!match) {
+            console.log(red(`  Unknown target "${args.target}". Options: ${targets.map((t) => t.id).join(', ')}`));
+            process.exit(1);
+        }
+        selected = [match];
+    }
+    else {
+        // Auto-install to all detected
+        selected = detected;
+    }
+    // API key
+    let apiKey = args['api-key'];
+    if (!apiKey) {
+        const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+        apiKey = await ask(rl, `  ${cyan('?')} Your FacturaHub API Key`);
+        rl.close();
+        if (!apiKey) {
+            console.log(red('\n  API Key is required. Get it from your dashboard → API Key.\n'));
+            process.exit(1);
+        }
+    }
+    // Install
+    const config = mcpEntry(apiKey);
+    console.log('');
+    for (const target of selected) {
+        const json = readJson(target.configPath);
+        if (!json.mcpServers)
+            json.mcpServers = {};
+        const existed = !!json.mcpServers.facturahub;
+        json.mcpServers.facturahub = config;
+        writeJson(target.configPath, json);
+        console.log(`  ${green('✓')} ${target.name} — ${existed ? 'updated' : 'installed'}`);
+        console.log(`    ${dim(target.configPath)}`);
+    }
+    console.log('');
+    console.log(bold('  Done! Next steps:'));
+    console.log(`  1. Restart ${selected.map((t) => t.name).join(' / ')}`);
+    console.log(`  2. Say: ${cyan('"Create an invoice for Acme Corp for €2,500"')}`);
+    console.log('');
+}
+// ---------------------------------------------------------------------------
+// Status command
+// ---------------------------------------------------------------------------
+function showStatus() {
+    console.log('');
+    console.log(bold('  FacturaHub MCP — Status'));
+    console.log('');
+    for (const target of getTargets()) {
+        const json = readJson(target.configPath);
+        const installed = !!json.mcpServers?.facturahub;
+        const icon = installed ? green('●') : dim('○');
+        console.log(`  ${icon} ${target.name} — ${installed ? green('installed') : dim('not installed')}`);
+        if (installed) {
+            const key = json.mcpServers.facturahub.env?.FACTURAHUB_API_KEY || '';
+            const masked = key.length > 8 ? key.slice(0, 4) + '••••' + key.slice(-4) : '••••';
+            console.log(`    ${dim(`API Key: ${masked}`)}`);
+        }
+    }
+    console.log('');
+}
+// ---------------------------------------------------------------------------
+// Uninstall command
+// ---------------------------------------------------------------------------
+function uninstall() {
+    console.log('');
+    console.log(bold('  FacturaHub MCP — Uninstall'));
+    console.log('');
+    let removed = 0;
+    for (const target of getTargets()) {
+        const json = readJson(target.configPath);
+        if (json.mcpServers?.facturahub) {
+            delete json.mcpServers.facturahub;
+            writeJson(target.configPath, json);
+            console.log(`  ${green('✓')} Removed from ${target.name}`);
+            removed++;
+        }
+    }
+    if (removed === 0)
+        console.log(dim('  FacturaHub not found in any client.'));
+    else
+        console.log(`\n  ${removed} config(s) removed. Restart your AI clients.`);
+    console.log('');
+}
+// ---------------------------------------------------------------------------
+// Parse args
+// ---------------------------------------------------------------------------
+function parseArgs() {
+    const argv = process.argv.slice(2);
+    const flags = {};
+    let command = '';
+    for (const arg of argv) {
+        if (arg.startsWith('--')) {
+            const [key, ...val] = arg.slice(2).split('=');
+            flags[key] = val.join('=') || 'true';
+        }
+        else if (!command) {
+            command = arg;
+        }
+    }
+    return { command, flags };
+}
+// ---------------------------------------------------------------------------
+// Main
+// ---------------------------------------------------------------------------
+async function main() {
+    const { command, flags } = parseArgs();
+    if (command === 'setup' || flags.setup) {
+        await setup(flags);
+        return;
+    }
+    if (command === 'status' || flags.status) {
+        showStatus();
+        return;
+    }
+    if (command === 'uninstall' || flags.uninstall) {
+        uninstall();
+        return;
+    }
+    if (command === 'help' || flags.help) {
+        console.log(`
+  ${bold('facturahub')} — AI invoicing MCP server
+
+  ${bold('Commands:')}
+    facturahub                    Start MCP server (used by AI clients)
+    facturahub setup              Install in your AI clients
+    facturahub setup --api-key=X  Install with API key
+    facturahub setup --target=X   Install in specific client only
+    facturahub status             Check installation status
+    facturahub uninstall          Remove from all clients
+    facturahub help               Show this help
+
+  ${bold('Targets:')}
+    claude-desktop, claude-code, cursor
+
+  ${bold('More info:')} https://facturahub.com
+`);
+        return;
+    }
+    // Default: run MCP server
+    await (0, server_1.startServer)();
+}
+main().catch((e) => {
+    console.error(red(`Error: ${e instanceof Error ? e.message : String(e)}`));
+    process.exit(1);
+});

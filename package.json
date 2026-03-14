@@ -1,0 +1,51 @@
+{
+  "name": "facturahub",
+  "version": "1.0.0",
+  "description": "FacturaHub MCP server — AI invoicing for Claude, Cursor, and other MCP-compatible assistants",
+  "main": "dist/server.js",
+  "bin": {
+    "facturahub": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "invoicing",
+    "claude",
+    "cursor",
+    "ai",
+    "facturahub",
+    "invoice",
+    "expenses",
+    "freelancer",
+    "taxes"
+  ],
+  "author": "FacturaHub <hello@facturahub.com>",
+  "license": "MIT",
+  "homepage": "https://facturahub.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Santy1422/facturahub-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Santy1422/facturahub-mcp/issues"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ]
+}
