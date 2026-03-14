@@ -182,8 +182,8 @@ facturahub help                     # Show help
 
 | Plan | Price | Invoices/month | Features |
 |------|-------|----------------|----------|
-| **Free** | €0 | 1 | All tools, 1 invoice/month |
-| **Starter** | €4.99/mo | 10 | All tools, 10 invoices/month |
+| **Free** | €0 | 5 | All tools, 5 invoices/month |
+| **Starter** | €4.99/mo | 30 | All tools, 30 invoices/month |
 | **Pro** | €19/mo | Unlimited | All tools, unlimited invoices |
 
 All plans include: expense tracking, P&L reports, tax summaries, cash flow projections, PDF generation, and multi-currency support.
