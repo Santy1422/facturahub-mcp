@@ -329,14 +329,15 @@ function registerTools(server, user) {
             return err(`Error generating PDF: ${e instanceof Error ? e.message : String(e)}`);
         }
     });
-    server.tool('register_expense', 'Register an expense (subscription, tool, travel, etc.) with a category', {
+    server.tool('register_expense', 'Register an expense with category and VAT/BTW rate. The taxRate is critical for quarterly VAT declarations — it calculates how much VAT you can recover.', {
         description: zod_1.z.string().describe('What the expense is for'),
-        amount: zod_1.z.number().describe('Amount of the expense'),
+        amount: zod_1.z.number().describe('Total amount INCLUDING VAT/BTW (bruto bedrag)'),
         currency: zod_1.z.string().optional().describe('Currency (EUR, USD, etc). Defaults to user currency.'),
         category: zod_1.z.enum(['software', 'hosting', 'travel', 'office', 'professional_services', 'marketing', 'taxes', 'salary', 'equipment', 'other']).describe('Expense category'),
         date: zod_1.z.string().optional().describe('Expense date YYYY-MM-DD. Defaults to today.'),
         vendor: zod_1.z.string().optional().describe('Who you paid (vendor/supplier name)'),
         recurring: zod_1.z.boolean().optional().describe('Whether this is a recurring expense'),
+        taxRate: zod_1.z.number().optional().describe('VAT/BTW/IVA rate in % (e.g. 21 for 21%, 9 for 9%). Use 0 for VAT-exempt. This is used to calculate recoverable VAT.'),
         notes: zod_1.z.string().optional().describe('Additional notes'),
     }, async (params) => {
         try {
@@ -348,10 +349,14 @@ function registerTools(server, user) {
                     date: params.date ?? new Date().toISOString().split('T')[0],
                 }),
             });
+            const vatInfo = expense.taxRate > 0
+                ? `  VAT ${expense.taxRate}%: ${formatMoney(expense.amount * expense.taxRate / (100 + expense.taxRate), expense.currency)} (recoverable)`
+                : null;
             return ok([
                 `Expense registered.`,
                 `  Description: ${expense.description}`,
-                `  Amount: ${formatMoney(expense.amount, expense.currency)}`,
+                `  Amount (incl. VAT): ${formatMoney(expense.amount, expense.currency)}`,
+                vatInfo,
                 `  Category: ${expense.category}`,
                 `  Date: ${formatDate(expense.date)}`,
                 expense.vendor ? `  Vendor: ${expense.vendor}` : null,
