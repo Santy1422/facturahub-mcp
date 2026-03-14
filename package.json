@@ -1,6 +1,6 @@
 {
   "name": "facturahub",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "FacturaHub MCP server — AI invoicing for Claude, Cursor, and other MCP-compatible assistants",
   "main": "dist/server.js",
   "bin": {

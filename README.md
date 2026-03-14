@@ -99,6 +99,9 @@ Talk to your AI in natural language. FacturaHub handles the rest.
 | "Create a client: John Doe, john@example.com" | Adds a new client to your database |
 | "List all clients" | Shows all your registered clients |
 | "Send reminder for overdue invoices" | Lists invoices that need follow-up |
+| "What's my VAT balance for Q1?" | Shows VAT collected vs paid, credit or payable |
+| "Income summary for 2026" | Annual earnings with quarterly breakdown |
+| "Delete expense abc123" | Removes an incorrect expense entry |
 | "Show my profile" | Displays your company info, tax ID, bank details |
 | "Update my IBAN to ES12 3456 7890" | Updates your bank details on profile |
 | "Change my company name to Acme SL" | Updates your business profile |
@@ -107,7 +110,7 @@ Talk to your AI in natural language. FacturaHub handles the rest.
 
 ## Available Tools
 
-FacturaHub exposes **17 MCP tools** that your AI can use:
+FacturaHub exposes **20 MCP tools** that your AI can use:
 
 ### Invoicing
 
@@ -134,9 +137,12 @@ FacturaHub exposes **17 MCP tools** that your AI can use:
 | Tool | Description |
 |------|-------------|
 | `register_expense` | Log an expense with category, vendor, and optional recurrence |
+| `delete_expense` | Delete an expense by ID |
 | `get_context` | Financial summary dashboard: pending, overdue, monthly income |
 | `get_profit_loss` | Profit & Loss report for any month |
 | `get_tax_summary` | Tax summary for quarterly declarations (VAT/IVA) |
+| `get_vat_balance` | VAT/IVA/BTW balance: collected vs paid, credit or payable |
+| `get_income_summary` | Annual earnings: gross/net income, expenses, taxable income by quarter |
 | `get_cashflow` | Cash flow projection based on pending invoices & recurring expenses |
 
 ### Profile

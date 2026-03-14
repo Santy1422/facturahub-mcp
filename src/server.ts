@@ -544,6 +544,113 @@ function registerTools(server: McpServer, user: any): void {
   );
 
   server.tool(
+    'delete_expense',
+    'Delete an expense by ID',
+    { expenseId: z.string().describe('Expense ID to delete') },
+    async ({ expenseId }) => {
+      try {
+        await api(`/api/expenses/${expenseId}`, { method: 'DELETE' });
+        return ok(`Expense ${expenseId} deleted.`);
+      } catch (e: unknown) {
+        return err(`Error deleting expense: ${e instanceof Error ? e.message : String(e)}`);
+      }
+    },
+  );
+
+  server.tool(
+    'get_vat_balance',
+    'Get your VAT/IVA/BTW balance — how much tax you collected vs paid, and whether you owe or have credit. Essential for quarterly tax declarations.',
+    {
+      quarter: z.number().optional().describe('Quarter (1-4). Defaults to current quarter.'),
+      year: z.number().optional().describe('Year. Defaults to current year.'),
+    },
+    async ({ quarter, year }) => {
+      try {
+        const params = new URLSearchParams();
+        if (quarter) params.set('quarter', String(quarter));
+        if (year) params.set('year', String(year));
+        const qs = params.toString() ? `?${params.toString()}` : '';
+        const report = await api(`/api/expenses/vat-balance${qs}`);
+
+        const lines = [
+          `=== VAT/IVA/BTW Balance ===`,
+          `Period: ${report.period}`,
+          ``,
+          `VAT collected (from invoices): ${formatMoney(report.vatCollected, user.currency)}`,
+          `VAT paid (on expenses): ${formatMoney(report.vatPaid, user.currency)}`,
+          ``,
+        ];
+
+        if (report.status === 'to_pay') {
+          lines.push(`VAT to pay: ${formatMoney(report.vatBalance, user.currency)}`);
+        } else if (report.status === 'in_favor') {
+          lines.push(`VAT credit (in your favor): ${formatMoney(Math.abs(report.vatBalance), user.currency)}`);
+        } else {
+          lines.push(`VAT balance: ${formatMoney(0, user.currency)} (neutral)`);
+        }
+
+        if (report.invoiceDetails.length > 0) {
+          lines.push(``, `Invoices with VAT:`);
+          for (const inv of report.invoiceDetails) {
+            lines.push(`  - ${inv.number} | VAT: ${formatMoney(inv.vat, user.currency)} | Total: ${formatMoney(inv.total, user.currency)}`);
+          }
+        }
+
+        if (report.expenseDetails.length > 0) {
+          lines.push(``, `Expenses with deductible VAT:`);
+          for (const exp of report.expenseDetails) {
+            lines.push(`  - ${exp.description}${exp.vendor ? ` (${exp.vendor})` : ''} | VAT ${exp.vatRate}%: ${formatMoney(exp.vat, user.currency)} | Total: ${formatMoney(exp.total, user.currency)}`);
+          }
+        }
+
+        return ok(lines.join('\n'));
+      } catch (e: unknown) {
+        return err(`Error: ${e instanceof Error ? e.message : String(e)}`);
+      }
+    },
+  );
+
+  server.tool(
+    'get_income_summary',
+    'Annual income/earnings summary (ganancias) — gross income, net income, expenses, taxable income, with quarterly breakdown. Use this for income tax planning.',
+    {
+      year: z.number().optional().describe('Year. Defaults to current year.'),
+    },
+    async ({ year }) => {
+      try {
+        const params = new URLSearchParams();
+        if (year) params.set('year', String(year));
+        const qs = params.toString() ? `?${params.toString()}` : '';
+        const report = await api(`/api/expenses/income-summary${qs}`);
+
+        const lines = [
+          `=== Income Summary ${report.year} ===`,
+          ``,
+          `Gross income (paid invoices): ${formatMoney(report.grossIncome, user.currency)}`,
+          `  VAT collected: ${formatMoney(report.vatCollected, user.currency)}`,
+          `  Net income (excl. VAT): ${formatMoney(report.netIncome, user.currency)}`,
+          ``,
+          `Total expenses: ${formatMoney(report.totalExpenses, user.currency)}`,
+          `  VAT on expenses: ${formatMoney(report.vatOnExpenses, user.currency)}`,
+          `  Net expenses (excl. VAT): ${formatMoney(report.netExpenses, user.currency)}`,
+          ``,
+          `Taxable income: ${formatMoney(report.taxableIncome, user.currency)}`,
+          ``,
+          `Quarterly breakdown:`,
+        ];
+
+        for (const q of report.quarters) {
+          lines.push(`  ${q.quarter}: Income ${formatMoney(q.income, user.currency)} | Expenses ${formatMoney(q.expenses, user.currency)} | Profit ${formatMoney(q.profit, user.currency)}`);
+        }
+
+        return ok(lines.join('\n'));
+      } catch (e: unknown) {
+        return err(`Error: ${e instanceof Error ? e.message : String(e)}`);
+      }
+    },
+  );
+
+  server.tool(
     'get_profile',
     'Get your business profile — company info, address, tax details, bank info, currency, and plan',
     async () => {
