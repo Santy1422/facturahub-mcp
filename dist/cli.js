@@ -245,6 +245,31 @@ async function main() {
         uninstall();
         return;
     }
+    if (command === 'version' || flags.version) {
+        const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf-8'));
+        console.log(`facturahub v${pkg.version}`);
+        return;
+    }
+    if (command === 'update' || flags.update) {
+        console.log('');
+        console.log(bold('  ⚡ Updating FacturaHub...'));
+        console.log('');
+        const { execSync } = await Promise.resolve().then(() => __importStar(require('child_process')));
+        try {
+            execSync('npm install -g facturahub@latest', { stdio: 'inherit' });
+            const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf-8'));
+            console.log('');
+            console.log(`  ${green('✓')} Updated to v${pkg.version}`);
+            console.log(`  Restart your AI clients to use the new version.`);
+            console.log('');
+        }
+        catch {
+            console.log(yellow('  Tip: if permission denied, run with sudo:'));
+            console.log(`  ${cyan('sudo npm install -g facturahub@latest')}`);
+            console.log('');
+        }
+        return;
+    }
     if (command === 'help' || flags.help) {
         console.log(`
   ${bold('facturahub')} — AI invoicing MCP server
@@ -255,6 +280,8 @@ async function main() {
     facturahub setup --api-key=X  Install with API key
     facturahub setup --target=X   Install in specific client only
     facturahub status             Check installation status
+    facturahub update             Update to latest version
+    facturahub version            Show current version
     facturahub uninstall          Remove from all clients
     facturahub help               Show this help
 
