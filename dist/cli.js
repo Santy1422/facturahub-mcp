@@ -141,10 +141,15 @@ async function setup(args) {
     let apiKey = args['api-key'];
     if (!apiKey) {
         const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+        console.log(dim(`  Don't have an account? Sign up for free:`));
+        console.log(`  ${cyan('npx facturahub register')}\n`);
         apiKey = await ask(rl, `  ${cyan('?')} Your FacturaHub API Key`);
         rl.close();
         if (!apiKey) {
-            console.log(red('\n  API Key is required. Get it from your dashboard → API Key.\n'));
+            console.log(red('\n  API Key is required.\n'));
+            console.log(`  1. Sign up at ${cyan('https://facturahub.com/register')}`);
+            console.log(`  2. Copy your API Key from the dashboard`);
+            console.log(`  3. Run: ${cyan('npx facturahub setup --api-key=YOUR_KEY')}\n`);
             process.exit(1);
         }
     }
@@ -270,15 +275,42 @@ async function main() {
         }
         return;
     }
+    if (command === 'register' || flags.register) {
+        const url = 'https://facturahub.com/register';
+        console.log('');
+        console.log(bold('  ⚡ FacturaHub — Create free account'));
+        console.log('');
+        console.log(`  Opening ${cyan(url)} in your browser...`);
+        console.log('');
+        const { exec } = await Promise.resolve().then(() => __importStar(require('child_process')));
+        const openCmd = os.platform() === 'darwin' ? 'open' : os.platform() === 'win32' ? 'start' : 'xdg-open';
+        exec(`${openCmd} ${url}`);
+        console.log(`  ${bold('After signing up:')}`);
+        console.log(`  1. Copy your API Key from the dashboard`);
+        console.log(`  2. Run: ${cyan('npx facturahub setup --api-key=YOUR_KEY')}`);
+        console.log('');
+        return;
+    }
+    if (command === 'login' || flags.login) {
+        const url = 'https://facturahub.com/login';
+        console.log('');
+        console.log(`  Opening ${cyan(url)} in your browser...`);
+        const { exec } = await Promise.resolve().then(() => __importStar(require('child_process')));
+        const openCmd = os.platform() === 'darwin' ? 'open' : os.platform() === 'win32' ? 'start' : 'xdg-open';
+        exec(`${openCmd} ${url}`);
+        console.log('');
+        return;
+    }
     if (command === 'help' || flags.help) {
         console.log(`
   ${bold('facturahub')} — AI invoicing MCP server
 
   ${bold('Commands:')}
-    facturahub                    Start MCP server (used by AI clients)
+    facturahub register           Create free account (opens browser)
+    facturahub login              Log in (opens browser)
     facturahub setup              Install in your AI clients
     facturahub setup --api-key=X  Install with API key
-    facturahub setup --target=X   Install in specific client only
+    facturahub setup --target=X   Install in a specific client
     facturahub status             Check installation status
     facturahub update             Update to latest version
     facturahub version            Show current version
@@ -292,7 +324,48 @@ async function main() {
 `);
         return;
     }
-    // Default: run MCP server
+    // If no API key and running interactively, show welcome instead of crashing
+    if (!process.env.FACTURAHUB_API_KEY && process.stdin.isTTY) {
+        console.log('');
+        console.log('');
+        console.log(bold('  ⚡ FacturaHub — Invoice with AI'));
+        console.log(dim('  ─────────────────────────────────────────'));
+        console.log('');
+        console.log(`  Create invoices, track expenses, and generate`);
+        console.log(`  tax reports by talking to Claude or Cursor.`);
+        console.log('');
+        console.log(`  ${bold('Get started in 2 minutes:')}`);
+        console.log('');
+        console.log(`  ${green('Step 1.')} Create your free account:`);
+        console.log(`           ${cyan('npx facturahub register')}`);
+        console.log('');
+        console.log(`  ${green('Step 2.')} Copy your API Key from the dashboard`);
+        console.log('');
+        console.log(`  ${green('Step 3.')} Connect your AI:`);
+        console.log(`           ${cyan('npx facturahub setup --api-key=YOUR_KEY')}`);
+        console.log('');
+        console.log(`  ${green('Step 4.')} Open Claude/Cursor and say:`);
+        console.log(`           ${dim('"Create an invoice for Acme Corp for $2,500"')}`);
+        console.log('');
+        console.log(dim('  ─────────────────────────────────────────'));
+        console.log(`  ${dim('100% free · No limits · 20+ countries')}`);
+        console.log(`  ${dim('facturahub.com')}`);
+        console.log('');
+        const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+        const answer = await ask(rl, `  ${cyan('?')} Do you want to create an account now? (Y/n)`, 'Y');
+        rl.close();
+        if (answer.toLowerCase() !== 'n') {
+            const url = 'https://facturahub.com/register';
+            console.log(`\n  Opening ${cyan(url)}...\n`);
+            const { exec } = await Promise.resolve().then(() => __importStar(require('child_process')));
+            const openCmd = os.platform() === 'darwin' ? 'open' : os.platform() === 'win32' ? 'start' : 'xdg-open';
+            exec(`${openCmd} ${url}`);
+            console.log(`  ${bold('After signing up, run:')}`);
+            console.log(`  ${cyan('npx facturahub setup --api-key=YOUR_KEY')}\n`);
+        }
+        return;
+    }
+    // Default: run MCP server (called by AI clients via stdio)
     await (0, server_1.startServer)();
 }
 main().catch((e) => {
