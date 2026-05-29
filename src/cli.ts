@@ -38,10 +38,16 @@ function getTargets(): Target[] {
       ? path.join(process.env.APPDATA || '', 'Claude', 'claude_desktop_config.json')
       : path.join(home, '.config', 'claude', 'claude_desktop_config.json');
 
+  const chatgptDesktop =
+    platform === 'darwin'
+      ? path.join(home, 'Library', 'Application Support', 'com.openai.chat', 'mcp.json')
+      : platform === 'win32'
+      ? path.join(process.env.APPDATA || '', 'com.openai.chat', 'mcp.json')
+      : path.join(home, '.config', 'com.openai.chat', 'mcp.json');
+
   return [
     { id: 'claude-desktop', name: 'Claude Desktop', configPath: claudeDesktop, detected: fs.existsSync(path.dirname(claudeDesktop)) },
     { id: 'claude-code', name: 'Claude Code', configPath: path.join(home, '.claude', 'settings.json'), detected: fs.existsSync(path.join(home, '.claude')) },
-    { id: 'cursor', name: 'Cursor', configPath: path.join(home, '.cursor', 'mcp.json'), detected: fs.existsSync(path.join(home, '.cursor')) },
   ];
 }
 
@@ -110,7 +116,7 @@ async function setup(args: Record<string, string>): Promise<void> {
 
   if (detected.length === 0) {
     console.log(yellow('  No AI clients detected.'));
-    console.log('  Install Claude Desktop, Claude Code, or Cursor first.\n');
+    console.log('  Install Claude Desktop or Claude Code first.\n');
     process.exit(1);
   }
 
@@ -324,6 +330,7 @@ async function main(): Promise<void> {
     facturahub setup              Install in your AI clients
     facturahub setup --api-key=X  Install with API key
     facturahub setup --target=X   Install in a specific client
+    facturahub serve              Start HTTP server
     facturahub status             Check installation status
     facturahub update             Update to latest version
     facturahub version            Show current version
@@ -331,10 +338,16 @@ async function main(): Promise<void> {
     facturahub help               Show this help
 
   ${bold('Targets:')}
-    claude-desktop, claude-code, cursor
+    claude-desktop, claude-code
 
   ${bold('More info:')} https://facturahub.com
 `);
+    return;
+  }
+
+  // Serve mode — HTTP transport for remote clients
+  if (command === 'serve' || flags.http) {
+    await startServer('http');
     return;
   }
 
@@ -346,7 +359,7 @@ async function main(): Promise<void> {
     console.log(dim('  ─────────────────────────────────────────'));
     console.log('');
     console.log(`  Create invoices, track expenses, and generate`);
-    console.log(`  tax reports by talking to Claude or Cursor.`);
+    console.log(`  tax reports by talking to Claude.`);
     console.log('');
     console.log(`  ${bold('Get started in 2 minutes:')}`);
     console.log('');
@@ -358,7 +371,7 @@ async function main(): Promise<void> {
     console.log(`  ${green('Step 3.')} Connect your AI:`);
     console.log(`           ${cyan('npx facturahub setup --api-key=YOUR_KEY')}`);
     console.log('');
-    console.log(`  ${green('Step 4.')} Open Claude/Cursor and say:`);
+    console.log(`  ${green('Step 4.')} Open Claude and say:`);
     console.log(`           ${dim('"Create an invoice for Acme Corp for $2,500"')}`);
     console.log('');
     console.log(dim('  ─────────────────────────────────────────'));

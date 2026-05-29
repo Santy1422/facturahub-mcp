@@ -5,8 +5,8 @@
 <h1 align="center">FacturaHub</h1>
 
 <p align="center">
-  <strong>Factura con tu IA. Gratis.</strong><br/>
-  Crea facturas, registra gastos y genera reportes fiscales hablando con Claude, Cursor o Windsurf.
+  <strong>AI-native invoicing for freelancers and small businesses.</strong><br/>
+  Invoices, expenses, tasks, team, POS and catalog -- all from Claude, ChatGPT, Cursor or Windsurf.
 </p>
 
 <p align="center">
@@ -17,78 +17,124 @@
 
 ---
 
-## 3 pasos. 2 minutos. Gratis.
+## Who is FacturaHub for?
 
-### 1. Crea tu cuenta
+Freelancers and startups (2-30 people) who want to run their business from their AI assistant. One MCP server the whole team shares.
 
-Registrate en **[facturahub.com](https://facturahub.com/register)** — es gratis, sin tarjeta de credito, sin limites.
+**Roles and permissions**: each member sees only what they need.
 
-Al terminar el onboarding vas a tener tu **API Key**.
+| Role | Access |
+|------|--------|
+| Owner / Admin | Everything |
+| Finance | Invoices, clients, expenses, reports |
+| Operations | Tasks, clients |
+| Member | Tasks |
+| Viewer | Reports (read-only) |
 
-### 2. Instala en tu IA
+---
+
+## 3 steps. 2 minutes. Free.
+
+### 1. Create your account
+
+Sign up at **[facturahub.com](https://facturahub.com/register)** -- free, no credit card.
+
+After onboarding you get your **API Key** and your team is ready.
+
+### 2. Install in your AI
 
 ```bash
-npx -y facturahub setup --api-key=TU_API_KEY
+npx -y facturahub setup --api-key=YOUR_API_KEY
 ```
 
-Eso es todo. Detecta automaticamente Claude Desktop, Claude Code y Cursor.
+Auto-detects Claude Desktop, ChatGPT Desktop, Claude Code and Cursor.
 
-### 3. Habla con tu IA
+### 3. Talk to your AI
 
-Abri tu cliente de IA y proba:
+Open your AI client and try:
 
-> *"Crea una factura para Acme Corp por €2,500 por desarrollo web"*
+> *"Create an invoice for Acme Corp for 2,500 EUR for web development"*
+> *"Create a task to review the staging deploy, assign to Juan, high priority"*
 
-La IA crea la factura, crea el cliente si es nuevo, aplica tu tasa de IVA, y genera un PDF profesional.
-
----
-
-## Que puedo hacer?
-
-Hablale a tu IA en lenguaje natural:
-
-| Tu dices | Que pasa |
-|----------|----------|
-| "Crea una factura para Acme por €2,500" | Crea factura + cliente automaticamente |
-| "Registra un gasto de €49 en Vercel, hosting" | Registra gasto con categoria e IVA |
-| "Como va mi P&L este mes?" | Ingresos, gastos, ganancia neta |
-| "Cuanto IVA debo este trimestre?" | Balance IVA: cobrado vs pagado |
-| "Facturas pendientes de cobro" | Lista facturas vencidas |
-| "Marca la factura #001 como pagada" | Actualiza estado y fecha de pago |
-| "Descarga PDF de la ultima factura" | Genera PDF profesional |
-| "Mis ganancias del 2026" | Resumen anual con desglose trimestral |
-
-### Importa tus datos
-
-Venis de Excel, Holded, Wave o cualquier otra plataforma? Pegale tus datos a Claude:
-
-> *"Tengo este Excel con mis facturas de 2025. Importa todo a FacturaHub."*
-
-Claude crea los clientes y las facturas automaticamente.
+The AI creates everything automatically -- invoices, clients, tasks, expenses.
 
 ---
 
-## 20 herramientas MCP
+## What can I do?
 
-| Categoria | Herramientas |
-|-----------|-------------|
-| **Facturas** | `create_invoice` · `duplicate_invoice` · `send_invoice` · `list_invoices` · `get_invoice` · `mark_paid` · `download_pdf` · `send_reminder` |
-| **Clientes** | `create_client` · `list_clients` |
-| **Gastos** | `register_expense` · `delete_expense` |
-| **Reportes** | `get_context` · `get_profit_loss` · `get_tax_summary` · `get_vat_balance` · `get_income_summary` · `get_cashflow` |
-| **Perfil** | `get_profile` · `update_profile` |
+### Invoicing and finances
+
+| You say | What happens |
+|---------|-------------|
+| "Create an invoice for Acme for 2,500 EUR" | Creates invoice + client automatically |
+| "Register a 49 EUR expense for Vercel, hosting" | Registers expense with category and tax |
+| "How's my P&L this month?" | Revenue, expenses, net profit |
+| "How much VAT do I owe this quarter?" | VAT balance: collected vs paid |
+| "Pending invoices" | Lists overdue invoices |
+| "Mark invoice #001 as paid" | Updates status and payment date |
+| "Download PDF of the last invoice" | Generates professional PDF |
+
+### Task management
+
+| You say | What happens |
+|---------|-------------|
+| "Create a task: review Acme contract, high priority" | Creates task in backlog |
+| "My pending tasks" | Lists your assigned tasks |
+| "Move the deploy task to review" | Validated status transition |
+| "Assign the onboarding task to Maria" | Assigns to team member |
+| "How's the team board?" | Overview: tasks by status and person |
+
+### E-Invoice (Panama)
+
+| You say | What happens |
+|---------|-------------|
+| "Emit this invoice to DGI" | Validates RUC and submits to DGI via Factura Facil |
 
 ---
 
-## Instalacion manual
+## Use cases: connect with your stack
 
-Si preferis configurar manualmente, agrega este JSON al archivo de tu cliente:
+FacturaHub is an MCP server. Combine it with other MCPs to automate your business:
 
-| Cliente | Archivo de config |
-|---------|-------------------|
+| Use case | How it works |
+|----------|-------------|
+| **Expenses from Telegram** | Connect Claude Code Channels to Telegram. Your team sends "Expense 49 EUR on AWS" from their phone. |
+| **Invoices from Gmail** | Connect Gmail MCP. "Find this month's supplier invoices and register them as expenses". Claude reads the PDFs and imports them. |
+| **Slack notifications** | Claude notifies you on Slack when an invoice is overdue or when someone completes a task. |
+| **Tasks from GitHub** | A PR gets merged -> Claude creates the deploy task and assigns it. Connect your repo via GitHub MCP. |
+| **Import from Excel** | Paste your spreadsheet of invoices or expenses. Claude parses and registers everything. |
+
+---
+
+## 56 MCP tools
+
+| Category | Tools |
+|----------|-------|
+| **Invoices** | `create_invoice` . `update_invoice` . `delete_invoice` . `duplicate_invoice` . `send_invoice` . `list_invoices` . `get_invoice` . `mark_paid` . `download_pdf` . `send_reminder` |
+| **Clients** | `create_client` . `list_clients` . `get_client` . `update_client` . `delete_client` |
+| **Expenses** | `register_expense` . `list_expenses` . `get_expense` . `update_expense` . `delete_expense` |
+| **Tasks** | `create_task` . `list_tasks` . `get_my_tasks` . `get_task_overview` . `move_task` . `assign_task` . `update_task` . `complete_task` . `delete_task` |
+| **Catalog** | `create_catalog_item` . `list_catalog_items` . `update_catalog_item` . `adjust_stock` |
+| **Vendors** | `create_vendor` . `list_vendors` |
+| **POS** | `get_open_register` . `add_movement` |
+| **Reports** | `get_context` . `get_profit_loss` . `get_tax_summary` . `get_vat_balance` . `get_income_summary` . `get_cashflow` |
+| **Tax** | `generate_tax_declaration` . `list_tax_declarations` . `get_tax_declaration` . `update_tax_declaration` . `submit_tax_declaration` |
+| **Profile** | `get_profile` . `update_profile` |
+| **Business Context** | `get_business_context` . `save_business_context` . `remove_business_context` . `save_business_summary` |
+| **E-Invoice Panama** | `validate_invoice_panama` . `submit_to_dgi` |
+
+---
+
+## Manual installation
+
+If you prefer to configure manually, add this JSON to your client's config file:
+
+| Client | Config file |
+|--------|-------------|
 | Claude Desktop | `~/Library/Application Support/Claude/claude_desktop_config.json` |
 | Claude Code | `~/.claude/settings.json` |
 | Cursor | `~/.cursor/mcp.json` |
+| ChatGPT Desktop | `~/Library/Application Support/com.openai.chat/mcp.json` |
 
 ```json
 {
@@ -97,7 +143,7 @@ Si preferis configurar manualmente, agrega este JSON al archivo de tu cliente:
       "command": "npx",
       "args": ["-y", "facturahub@latest"],
       "env": {
-        "FACTURAHUB_API_KEY": "tu-api-key",
+        "FACTURAHUB_API_KEY": "your-api-key",
         "FACTURAHUB_API_URL": "https://api.facturahub.com"
       }
     }
@@ -105,33 +151,64 @@ Si preferis configurar manualmente, agrega este JSON al archivo de tu cliente:
 }
 ```
 
+### ChatGPT Web (Developer Mode)
+
+To use FacturaHub with ChatGPT in the browser, launch the remote HTTP server:
+
+```bash
+FACTURAHUB_API_KEY=your-api-key npx -y facturahub serve
+```
+
+This starts a server at `http://localhost:8080/mcp`. Then in ChatGPT:
+
+1. **Settings** > **Connectors** > **Developer Mode** (enable)
+2. **Add MCP Server** > URL: `http://localhost:8080/mcp`
+
 ---
 
-## 20+ paises
+## Multi-user teams
 
-🇪🇸 Espana · 🇲🇽 Mexico · 🇦🇷 Argentina · 🇨🇴 Colombia · 🇨🇱 Chile · 🇵🇪 Peru · 🇺🇾 Uruguay · 🇧🇷 Brasil · 🇨🇷 Costa Rica · 🇪🇨 Ecuador · 🇵🇦 Panama · 🇩🇴 Rep. Dominicana · 🇳🇱 Paises Bajos · 🇩🇪 Alemania · 🇫🇷 Francia · 🇮🇹 Italia · 🇵🇹 Portugal · 🇺🇸 Estados Unidos · 🇬🇧 Reino Unido
+1. **Create your team** at [facturahub.com](https://facturahub.com)
+2. **Invite members** with specific roles (finance, operations, member)
+3. **Each member gets their own API Key** -- inherits permissions from their role
 
-IVA, BTW, IRPF y mas — configuracion fiscal automatica por pais.
+A dev only sees tasks. Finance sees invoices and expenses. The CEO sees everything.
 
 ---
 
-## Precio
+## Countries supported
 
-**Gratis.** Sin limites. Facturas ilimitadas, gastos ilimitados, reportes, PDF, MCP — todo incluido.
+| Country | Currency | Tax | E-Invoice |
+|---------|----------|-----|-----------|
+| Panama | USD | ITBMS 7% | FEP via Factura Facil / DGI |
+| Netherlands | EUR | BTW 21% | Peppol / PDF |
+| United States | USD | Sales Tax | PDF only |
 
-**[Crear cuenta gratis →](https://facturahub.com/register)**
+---
+
+## Pricing
+
+| Plan | Price | Includes |
+|------|-------|----------|
+| **Free** | $0/mo | Core features, 1 member |
+| **Starter** | $19/mo | Extended limits, up to 5 members |
+| **Pro** | $39/mo | Unlimited, up to 20 members, e-invoice, priority support |
+
+**[Create free account ->](https://facturahub.com/register)**
 
 ---
 
 ## CLI
 
 ```bash
-npx -y facturahub setup --api-key=XXX   # Instala en todos tus clientes de IA
-npx -y facturahub setup --target=cursor  # Instala solo en Cursor
-npx -y facturahub status                 # Verifica la instalacion
-npx -y facturahub version                # Version actual
-npx -y facturahub update                 # Actualizar a la ultima version
-npx -y facturahub uninstall              # Desinstalar de todos los clientes
+npx -y facturahub setup --api-key=XXX   # Install in all your AI clients
+npx -y facturahub setup --target=cursor  # Install only in Cursor
+npx -y facturahub setup --target=chatgpt # Install in ChatGPT Desktop
+npx -y facturahub serve                  # HTTP server for ChatGPT Web
+npx -y facturahub status                 # Verify installation
+npx -y facturahub version                # Current version
+npx -y facturahub update                 # Update to latest version
+npx -y facturahub uninstall              # Uninstall from all clients
 ```
 
 ---
@@ -143,4 +220,4 @@ npx -y facturahub uninstall              # Desinstalar de todos los clientes
 
 ---
 
-Hecho por [Santiago Garcia](https://github.com/Santy1422) para freelancers que odian facturar.
+Built by [Santiago Garcia](https://github.com/Santy1422) in Haarlem, Netherlands.

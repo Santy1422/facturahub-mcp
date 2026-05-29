@@ -1,1 +1,1 @@
-export declare function startServer(): Promise<void>;
+export declare function startServer(mode?: 'stdio' | 'http'): Promise<void>;
