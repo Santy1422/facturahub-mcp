@@ -2289,7 +2289,7 @@ export async function startServer(mode: 'stdio' | 'http' = 'stdio'): Promise<voi
 
   const instructions = await buildInstructions(user);
   const server = new McpServer(
-    { name: 'facturahub', version: '1.9.1' },
+    { name: 'facturahub', version: '1.9.2' },
     { instructions },
   );
   registerTools(server, user);
@@ -2391,7 +2391,7 @@ async function startHttpServer(): Promise<void> {
 
         const transport = new SSEServerTransport('/messages', res);
         const server = new McpServer(
-          { name: 'facturahub', version: '1.9.1' },
+          { name: 'facturahub', version: '1.9.2' },
           { instructions: await buildInstructions(user) },
         );
         registerTools(server, user);
@@ -2491,7 +2491,7 @@ async function startHttpServer(): Promise<void> {
       });
 
       const server = new McpServer(
-        { name: 'facturahub', version: '1.9.1' },
+        { name: 'facturahub', version: '1.9.2' },
         { instructions },
       );
       registerTools(server, user);

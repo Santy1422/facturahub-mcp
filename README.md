@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="https://facturahub.com/logo.png" alt="FacturaHub" width="80" />
+  <img src="https://facturahub.com/logo.png" alt="FacturaHub — AI invoicing MCP server" width="80" />
 </p>
 
-<h1 align="center">FacturaHub</h1>
+<h1 align="center">FacturaHub — AI Invoicing & Business Management via MCP</h1>
 
 <p align="center">
-  <strong>AI-native invoicing for freelancers and small businesses.</strong><br/>
-  Invoices, expenses, tasks, team, POS, catalog, reports and admin panel -- all from Claude, ChatGPT, Cursor or Windsurf.
+  <strong>The complete MCP server for invoicing, expenses, tasks, team management, POS, inventory, reports, and admin panel.</strong><br/>
+  Run your entire business from Claude, ChatGPT, Cursor, or Windsurf. 69 tools. One npm install.
 </p>
 
 <p align="center">
@@ -19,7 +19,7 @@
 
 ## Who is FacturaHub for?
 
-Freelancers and startups (2-30 people) who want to run their business from their AI assistant. One MCP server the whole team shares.
+Freelancers, consultants, agencies, and startups (1-30 people) who want to run their business from their AI assistant — create invoices, track expenses, manage tasks, generate reports, and handle taxes, all by talking to Claude or ChatGPT. One MCP server the whole team shares.
 
 **Roles and permissions**: each member sees only what they need.
 
@@ -61,6 +61,8 @@ The AI creates everything automatically -- invoices, clients, tasks, expenses.
 ---
 
 ## What can I do?
+
+Talk to your AI in natural language — FacturaHub handles the rest. Here are examples by category:
 
 ### Invoicing and finances
 
@@ -194,11 +196,17 @@ A dev only sees tasks. Finance sees invoices and expenses. The CEO sees everythi
 
 ## Countries supported
 
+Works anywhere, with specialized tax compliance for:
+
 | Country | Currency | Tax | E-Invoice |
 |---------|----------|-----|-----------|
 | Panama | USD | ITBMS 7% | FEP via Factura Facil / DGI |
 | Netherlands | EUR | BTW 21% | Peppol / PDF |
 | United States | USD | Sales Tax | PDF only |
+| Spain | EUR | IVA 21% | Modelo 303 quarterly |
+| Mexico | MXN | IVA 16% | CFDI / SAT |
+| Colombia | COP | IVA 19% | DIAN |
+| Argentina | ARS | IVA 21% | AFIP |
 
 ---
 
@@ -236,4 +244,17 @@ npx -y facturahub uninstall              # Uninstall from all clients
 
 ---
 
+## Why FacturaHub?
+
+- **69 MCP tools** — the most complete business MCP server available
+- **AI-native** — built for Claude, ChatGPT, Cursor, and Windsurf from day one
+- **Team-ready** — roles, permissions, activity logs, and shared context
+- **Multi-country** — tax compliance for Panama, Spain, Mexico, Colombia, Netherlands, USA, and more
+- **Free tier** — get started with no credit card required
+- **Business Memory** — your AI remembers your clients, processes, and preferences across sessions
+
+---
+
 Built by [Santiago Garcia](https://github.com/Santy1422) in Haarlem, Netherlands.
+
+**Keywords**: MCP server, Model Context Protocol, AI invoicing, Claude invoicing, ChatGPT invoicing, invoice automation, expense tracking, freelancer tools, small business AI, facturacion electronica, factura electronica, CFDI, SAT, DGI, DIAN, AFIP, AEAT, BTW, IVA, ITBMS, VAT, tax declarations, accounts receivable, accounts payable, POS, point of sale, inventory management, task management, team collaboration, business intelligence, admin panel, dashboard KPIs
