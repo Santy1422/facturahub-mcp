@@ -1830,7 +1830,7 @@ async function startServer(mode = 'stdio') {
         process.exit(1);
     }
     const instructions = await buildInstructions(user);
-    const server = new mcp_js_1.McpServer({ name: 'facturahub', version: '1.9.0' }, { instructions });
+    const server = new mcp_js_1.McpServer({ name: 'facturahub', version: '1.9.1' }, { instructions });
     registerTools(server, user);
     const transport = new stdio_js_1.StdioServerTransport();
     await server.connect(transport);
@@ -1912,7 +1912,7 @@ async function startHttpServer() {
                     }
                 }
                 const transport = new sse_js_1.SSEServerTransport('/messages', res);
-                const server = new mcp_js_1.McpServer({ name: 'facturahub', version: '1.9.0' }, { instructions: await buildInstructions(user) });
+                const server = new mcp_js_1.McpServer({ name: 'facturahub', version: '1.9.1' }, { instructions: await buildInstructions(user) });
                 registerTools(server, user);
                 await server.connect(transport);
                 sseSessions.set(transport.sessionId, { server, transport, apiKey });
@@ -1997,7 +1997,7 @@ async function startHttpServer() {
             const transport = new streamableHttp_js_1.StreamableHTTPServerTransport({
                 sessionIdGenerator: () => (0, node_crypto_1.randomUUID)(),
             });
-            const server = new mcp_js_1.McpServer({ name: 'facturahub', version: '1.9.0' }, { instructions });
+            const server = new mcp_js_1.McpServer({ name: 'facturahub', version: '1.9.1' }, { instructions });
             registerTools(server, user);
             await server.connect(transport);
             const newSessionId = transport.sessionId;

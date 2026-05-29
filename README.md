@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>AI-native invoicing for freelancers and small businesses.</strong><br/>
-  Invoices, expenses, tasks, team, POS and catalog -- all from Claude, ChatGPT, Cursor or Windsurf.
+  Invoices, expenses, tasks, team, POS, catalog, reports and admin panel -- all from Claude, ChatGPT, Cursor or Windsurf.
 </p>
 
 <p align="center">
@@ -84,6 +84,18 @@ The AI creates everything automatically -- invoices, clients, tasks, expenses.
 | "Assign the onboarding task to Maria" | Assigns to team member |
 | "How's the team board?" | Overview: tasks by status and person |
 
+### Admin panel & reports
+
+| You say | What happens |
+|---------|-------------|
+| "Give me a dashboard overview" | Revenue, expenses, profit, overdue, open tasks |
+| "Show the aging report" | Unpaid invoices by days overdue (1-30, 31-60, 61-90, 90+) |
+| "Revenue by client this quarter" | Breakdown per client with percentages |
+| "What happened this week?" | Activity log: who did what and when |
+| "Export my invoices as CSV" | Download link for filtered data |
+| "Remove Juan from the team" | Removes team member (admin only) |
+| "Change Maria's role to finance" | Updates permissions |
+
 ### E-Invoice (Panama)
 
 | You say | What happens |
@@ -106,7 +118,7 @@ FacturaHub is an MCP server. Combine it with other MCPs to automate your busines
 
 ---
 
-## 56 MCP tools
+## 69 MCP tools
 
 | Category | Tools |
 |----------|-------|
@@ -115,12 +127,16 @@ FacturaHub is an MCP server. Combine it with other MCPs to automate your busines
 | **Expenses** | `register_expense` . `list_expenses` . `get_expense` . `update_expense` . `delete_expense` |
 | **Tasks** | `create_task` . `list_tasks` . `get_my_tasks` . `get_task_overview` . `move_task` . `assign_task` . `update_task` . `complete_task` . `delete_task` |
 | **Catalog** | `create_catalog_item` . `list_catalog_items` . `update_catalog_item` . `adjust_stock` |
-| **Vendors** | `create_vendor` . `list_vendors` |
-| **POS** | `get_open_register` . `add_movement` |
-| **Reports** | `get_context` . `get_profit_loss` . `get_tax_summary` . `get_vat_balance` . `get_income_summary` . `get_cashflow` |
-| **Tax** | `generate_tax_declaration` . `list_tax_declarations` . `get_tax_declaration` . `update_tax_declaration` . `submit_tax_declaration` |
+| **Vendors** | `create_vendor` . `list_vendors` . `update_vendor` . `delete_vendor` |
+| **Supplier Invoices** | `create_supplier_invoice` . `list_supplier_invoices` . `get_supplier_invoice` . `record_supplier_payment` |
+| **POS / Cash Register** | `open_register` . `close_register` . `get_open_register` . `add_movement` |
+| **Reports & Analytics** | `get_context` . `get_profit_loss` . `get_tax_summary` . `get_vat_balance` . `get_income_summary` . `get_cashflow` . `get_aging_report` . `get_revenue_by_client` |
+| **Admin Panel** | `get_dashboard_summary` . `get_activity_log` . `export_data` |
+| **Team Management** | `list_teams` . `list_team_members` . `invite_team_member` . `remove_team_member` . `change_member_role` |
+| **Billing** | `get_billing_info` . `upgrade_plan` |
+| **Tax Declarations** | `generate_tax_declaration` . `list_tax_declarations` . `get_tax_declaration` . `update_tax_declaration` . `submit_tax_declaration` |
 | **Profile** | `get_profile` . `update_profile` |
-| **Business Context** | `get_business_context` . `save_business_context` . `remove_business_context` . `save_business_summary` |
+| **Business Memory** | `get_business_context` . `save_business_context` . `remove_business_context` . `save_business_summary` |
 | **E-Invoice Panama** | `validate_invoice_panama` . `submit_to_dgi` |
 
 ---

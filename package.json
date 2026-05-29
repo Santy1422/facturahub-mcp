@@ -1,7 +1,7 @@
 {
   "name": "facturahub",
-  "version": "1.9.0",
-  "description": "FacturaHub MCP server — your business ecosystem powered by Claude: invoicing, expenses, task management, and Business Memory for freelancers, consultants, and independent professionals.",
+  "version": "1.9.1",
+  "description": "FacturaHub MCP server — your business ecosystem powered by AI: invoicing, expenses, tasks, team, POS, catalog, reports, admin panel, and Business Memory for freelancers and startups.",
   "main": "dist/server.js",
   "bin": {
     "facturahub": "./dist/cli.js"
